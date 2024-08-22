@@ -3,7 +3,9 @@
 import { Disclosure, Menu, Transition } from "@headlessui/react";
 import Avvvatars from "avvvatars-react";
 import { MenuIcon, ShieldCheckIcon, XIcon } from "lucide-react";
+import { Session } from "next-auth";
 import { signIn } from "next-auth/react";
+
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Fragment } from "react";
@@ -17,7 +19,11 @@ function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
 }
 
-export default function Navbar() {
+type Props = {
+  user: Session['user']
+}
+
+export default function Navbar({ user }: Props) {
   const pathname = usePathname();
 
   return (
@@ -52,9 +58,22 @@ export default function Navbar() {
               <div className="hidden sm:ml-6 sm:flex sm:items-center">
                 <Menu as="div" className="relative ml-3">
                   <div>
-                    <Menu.Button className="flex rounded-full bg-white text-sm focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-2">
+                    <Menu.Button 
+                      className="flex rounded-full 
+                      bg-white text-sm focus:outline-none 
+                      focus:ring-2 focus:ring-slate-500 focus:ring-offset-2">
                       <span className="sr-only">Open user menu</span>
-                      <Avvvatars value={"U"} />
+                      {user?.image ? (
+                        <Image 
+                          className="h-8 w-8 rounded-full"
+                          src={user.image}
+                          height={32}
+                          width={32}
+                          alt={user?.name ?? "avatar"}
+                        />
+                      ) : (
+                        <Avvvatars value={"W"} />
+                      )}
                     </Menu.Button>
                   </div>
                   <Transition
